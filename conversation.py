@@ -10,25 +10,35 @@ from telegram.ext import (
 )
 
 
-ARTIST, LYRICS = 0, 1
+ARTIST, TITLE = 0, 1
+
+data = {ARTIST: None,
+        TITLE: None}
+
 
 def intro(update: Update, context: CallbackContext) -> int:
-    update.message.reply_text('Hi! Looking for some songs? I can help!'
-                              'Which artist are you looking for?')
+    update.message.reply_text('Hi! Looking for some songs? I can help!')
+    update.message.reply_text('Which artist are you looking for?')
     return ARTIST
 
 
 def artist(update: Update, context: CallbackContext) -> int:
-    update.message.reply_text('{}?OK!'.format(update.message.text))
-    return LYRICS
+    data[ARTIST] = update.message.from_user
+    update.message.reply_text('{}?OK!'.format(data[ARTIST]))
+    update.message.reply_text('What about the lyrics?')
+    return TITLE
 
 
-def lyrics(update: Update, context: CallbackContext) -> int:
-    update.message.reply_text('{}?OK!'.format(update.message.text))
+def title(update: Update, context: CallbackContext) -> int:
+    data[TITLE] = update.message.from_user
+    update.message.reply_text('Great! I\'ll then be looking for {}\'s song titled {}.'
+                              .format(data[ARTIST], data[TITLE]))
     return ConversationHandler.END
+
 
 def quit(update: Update, context: CallbackContext):
     return ConversationHandler.END
+
 
 if __name__ == '__main__':
     updater = Updater(get_token(), use_context=True)
@@ -39,7 +49,7 @@ if __name__ == '__main__':
         entry_points=[CommandHandler("start", intro)],
         states={
             ARTIST: [MessageHandler(Filters.text, callback=artist)],
-            LYRICS: [MessageHandler(Filters.text, callback=lyrics)]
+            TITLE: [MessageHandler(Filters.text, callback=title)]
         },
         fallbacks=[CommandHandler('quit', quit)]
     ))
