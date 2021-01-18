@@ -23,14 +23,14 @@ def intro(update: Update, context: CallbackContext) -> int:
 
 
 def artist(update: Update, context: CallbackContext) -> int:
-    data[ARTIST] = update.message.from_user
+    data[ARTIST] = update.message.text
     update.message.reply_text('{}?OK!'.format(data[ARTIST]))
-    update.message.reply_text('What about the lyrics?')
+    update.message.reply_text('What about the song title?')
     return TITLE
 
 
 def title(update: Update, context: CallbackContext) -> int:
-    data[TITLE] = update.message.from_user
+    data[TITLE] = update.message.text
     update.message.reply_text('Great! I\'ll then be looking for {}\'s song titled {}.'
                               .format(data[ARTIST], data[TITLE]))
     return ConversationHandler.END
