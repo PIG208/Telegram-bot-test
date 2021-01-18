@@ -1,7 +1,6 @@
-import json
+from utils import get_token
 import telegram
 
-credentials = json.load(open('token.json'))
-bot = telegram.Bot(token=credentials['token'])
+bot = telegram.Bot(token=get_token())
 print(bot.get_me())
 
